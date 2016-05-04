@@ -1,0 +1,12 @@
+- 1.2
+	add RenderOverlay event
+
+- 1.1
+	add RenderTick event
+	add ClientEventAPI version check
+
+- 1.0.1
+	Fix PlayerControllerMP error
+
+- 1.0
+	First release
