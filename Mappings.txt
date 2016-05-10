@@ -1,0 +1,75 @@
+﻿this.entityRenderer.updateCameraAndRender(float,long) [ Minecraft.runGameLoop() ]
+this.o.a(float,long); [ bcc.av() ]
+
+	=> EntityRender => this.o => class "bnd" #1125 , Forge 呼叫的是自己的 Class
+	但實際上應該要呼叫的是 mc 自己的 GuiIngame
+
+
+.event.SoundEvent
+	<init>
+		sound.getSoundLocation().a() => getResourcePath() [ in class ResourceLocation ]
+		
+	innerClass ISound
+		<init>
+			Class.forName("byg"); => byg : ISound (net.minecraft.client.audio)
+			getMethod("a"); => a : getSoundLocation() | ResourceLocation
+			getMethod("i"); => i : getXPosF() | float
+			getMethod("j"); => j : getYPosF() | float
+			getMethod("k"); => k : getZPosF() | float
+			//----- Not implement yet -----
+			getMethod("b"); => b : getSound()  | byd = Sound (net.minecraft.client.audio)
+			getMethod("d"); => d : getCategory() | SoundCategory
+			getMethod("e"); => e : canRepeat() | boolean
+			getMethod("f"); => f : getRepeatDelay() | int
+			getMethod("g"); => g : getVolume() | float
+			getMethod("h"); => h : getPitch() | float
+			
+		
+		
+.transformer.TransformHandler
+
+	field SOUNDMGR = "byt"  => SoundManager (net.minecraft.client.audio)
+	
+	injectOnTickEvent
+		runTickName = "t"; => runTick [ in class Minecraft decs ()V ]
+		
+	injectOnSoundPlayEvent
+		iSoundName = "byg"; => ISound (net.minecraft.client.audio)
+		playMethod = "c"; => playSound [in class SoundManager decs (ISound)V ]
+		
+	injectOnRenderTickEvent ( Minecraft.runGameLoop() , 找 "gameRenderer" , 該方法開頭有 "root" 的 )
+		runGameLoopName = "av"; => runGameLoop [ in class Minecrafe decs ()V ]
+		
+	injectOnRenderOverlayEvent ( EntityRender 的 updateCameraAndRender 會呼叫到 GuiIngame.renderGameOverlay(F) , 找 "bossHealth" )
+		// 要在 entityRenderer.setupOverlayRendering 之前呼叫 start , 結束前呼叫 post
+		// GuiIngame => bcr 1.9.2
+		renderGOMethod = "a"; => renderGameOverlay(F)V
+
+		
+.util.PlayerControllerMP
+	static getPlayerController
+		Minecraft.class.getField("c"); => c : playerController
+	
+	<init>
+		Class.forName("bkq"); => bkq : PlayerControllerMP
+		getMethod("a",......) => a: processRightClickBlock()	[參數不同]
+		getMethod("a",......) => a: processRightClick()			[參數不同]
+		getMethod("d"); => d : getBlockReachDistance()
+		getMethod(""); =>  : 
+		getMethod(""); =>  : 
+		
+.util.APILog
+	logChat
+		txt.a() => txt.append()
+		
+	infoChat
+		txt.a() => txt.append()
+		
+.util.APIUtil
+	getLanguage
+		Class.forName("bcc"); => Minecraft
+		getField("u"); => u : gameSettings [ in class Minecraft , type : bce ]
+		
+		Class.forName("bce"); => GameSettings
+		getField("aC"); => aC : language [ in class GameSettings , type String]
+	
