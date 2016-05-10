@@ -19,13 +19,31 @@ import tw.darkk6.meddle.api.Config;
 import tw.darkk6.meddle.api.util.APILog;
 
 public class TransformHandler implements IClassTransformer {
-	
+	/*
+	 *	Minecraft
+	 *		bcd : 1.9.4
+	 *		bcc : 1.9.2 
+	 * 
+	 * GuiIngame
+	 * 		bcs : 1.9.4
+	 * 		bcr : 1.9.2
+	 * 
+	 * GuiScreen
+	 * 		bez : 1.9.4
+	 * 		bey : 1.9.2
+	 * 
+	 * SoundManager
+	 * 		byt : 1.9.2 ~ 1.9.4
+	 * 
+	 * ISound
+	 * 		byg : 1.9.2 ~ 1.9.4
+	 * 
+	 */
 	private static String MINECRAFT = DynamicMappings.getClassMapping("net/minecraft/client/Minecraft");
 	
-	// seems is "bcr"  in MC 1.9.2
 	private static String GUIINGAME = DynamicMappings.getClassMapping("net/minecraft/client/gui/GuiIngame");
 	
-	//net.minecraft.client.audio.SoundManager , 1.9.2 = byt
+	//net.minecraft.client.audio.SoundManager
 	private static String SOUNDMGR = "byt";
 	
 	@Override
@@ -47,7 +65,7 @@ public class TransformHandler implements IClassTransformer {
 	}
 /************************* Inject onRenderTick Event in Minecraft.class ******************************/
 	private byte[] injectOnRenderTickEvent(byte[] bytes){
-		String runGameLoopName = "av";	// 1.9.2
+		String runGameLoopName = "av";	// 1.9.2~1.9.4
 		String methodDecs = "()V";
 		
 		ClassNode classNode = new ClassNode();
@@ -136,7 +154,7 @@ public class TransformHandler implements IClassTransformer {
 	
 /************************* Inject onGuiOpen Event in Minecraft.class ******************************/	
 	private byte[] injectOnGuiOpenEvent(byte[] bytes){
-		// 1.9.2 , bcc a (Lbey;)V bey , ==> Minecraft.displayGuiScreen(GuiScreen)
+		//Minecraft.displayGuiScreen(GuiScreen)
 		String clGuiScreenName = DynamicMappings.getClassMapping("net/minecraft/client/gui/GuiScreen");
 		
 		ClassNode classNode = new ClassNode();
@@ -197,7 +215,7 @@ public class TransformHandler implements IClassTransformer {
 	
 /************************* Inject onTick Event in Minecraft.class ******************************/
 	private byte[] injectOnTickEvent(byte[] bytes){
-		// runTick() 在 1.9.2=> t ()V
+		// runTick() 在 1.9.2 ~ 1.9.4 => t ()V
 		String runTickName = "t";	//method name
 		String runTickDesc = "()V";	//method descriptor
 		
@@ -265,10 +283,10 @@ public class TransformHandler implements IClassTransformer {
 	
 /************************* Inject onSoundPlay Event in SoundManager.class ******************************/
 	//當 Client 播放聲音時 playSound(ISound p_sound)V  => c(byg isound)V
-	//byg net/minecraft/client/audio/ISound , 1.9.2
+	//byg net/minecraft/client/audio/ISound , 1.9.2~1.9.4
 	private byte[] injectOnSoundPlayEvent(byte[] bytes){
-		String iSoundName = "byg";	//1.9.2
-		String playMethod = "c";	//1.9.2
+		String iSoundName = "byg";	//1.9.2~1.9.4
+		String playMethod = "c";	//1.9.2~1.9.4
 		String playMethodDecs = "(L"+iSoundName+";)V";
 		
 		ClassNode classNode = new ClassNode();
@@ -333,8 +351,8 @@ public class TransformHandler implements IClassTransformer {
 	}
 /************************* Inject onRenderOverlay Event in GuiIngame.class ******************************/
 	private byte[] injectOnRenderOverlayEvent(byte[] bytes){
-		// in Minecraft 1.9.2 => renderGameOverlay=> a(F)V
-		String renderGOMethod = "a";	//1.9.2
+		// in Minecraft 1.9.2 ~ 1.9.4 => renderGameOverlay=> a(F)V
+		String renderGOMethod = "a";
 		String renderGOMethodDecs = "(F)V";
 		
 		ClassNode classNode = new ClassNode();

@@ -23,18 +23,19 @@ public class SoundEvent {
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public ISound(Object iSoundObj){
 			try{
+				// byg => ISound
 				Class clz=Class.forName("byg");
-				//=== getSoundLocation() ===
+				//=== a => getSoundLocation() ===
 				Method m=clz.getMethod("a");
 				ResourceLocation r=(ResourceLocation)m.invoke(iSoundObj);
 				this.resLocation=r;
-				//=== getXPosF() ===
+				//=== i => getXPosF() ===
 				m=clz.getMethod("i");
 				this.x=(Float)m.invoke(iSoundObj);
-				//=== getYPosF() ===
+				//=== j => getYPosF() ===
 				m=clz.getMethod("j");
 				this.y=(Float)m.invoke(iSoundObj);
-				//=== getZPosF() ===
+				//=== k=> getZPosF() ===
 				m=clz.getMethod("k");
 				this.z=(Float)m.invoke(iSoundObj);
 				

@@ -29,9 +29,8 @@ this.o.a(float,long); [ bcc.av() ]
 .transformer.TransformHandler
 
 	field SOUNDMGR = "byt"  => SoundManager (net.minecraft.client.audio)
-	
 	injectOnTickEvent
-		runTickName = "t"; => runTick [ in class Minecraft decs ()V ]
+		runTickName = "t"; => runTick [ in class Minecraft decs ()V ]  { search keyword : "gui" , "gameMode" }
 		
 	injectOnSoundPlayEvent
 		iSoundName = "byg"; => ISound (net.minecraft.client.audio)
@@ -42,7 +41,7 @@ this.o.a(float,long); [ bcc.av() ]
 		
 	injectOnRenderOverlayEvent ( EntityRender 的 updateCameraAndRender 會呼叫到 GuiIngame.renderGameOverlay(F) , 找 "bossHealth" )
 		// 要在 entityRenderer.setupOverlayRendering 之前呼叫 start , 結束前呼叫 post
-		// GuiIngame => bcr 1.9.2
+		// GuiIngame => bcs 1.9.4 ; bcr 1.9.2
 		renderGOMethod = "a"; => renderGameOverlay(F)V
 
 		
@@ -51,7 +50,7 @@ this.o.a(float,long); [ bcc.av() ]
 		Minecraft.class.getField("c"); => c : playerController
 	
 	<init>
-		Class.forName("bkq"); => bkq : PlayerControllerMP
+		Class.forName("bkr"); => bkr : PlayerControllerMP { 1.9.2 is bkq }
 		getMethod("a",......) => a: processRightClickBlock()	[參數不同]
 		getMethod("a",......) => a: processRightClick()			[參數不同]
 		getMethod("d"); => d : getBlockReachDistance()
@@ -67,9 +66,8 @@ this.o.a(float,long); [ bcc.av() ]
 		
 .util.APIUtil
 	getLanguage
-		Class.forName("bcc"); => Minecraft
-		getField("u"); => u : gameSettings [ in class Minecraft , type : bce ]
+		Class.forName("bcd"); => Minecraft
+		getField("u"); => u : gameSettings [ in class Minecraft , type : bcf ]
 		
-		Class.forName("bce"); => GameSettings
+		Class.forName("bcf"); => GameSettings
 		getField("aC"); => aC : language [ in class GameSettings , type String]
-	

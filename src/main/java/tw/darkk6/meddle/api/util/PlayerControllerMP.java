@@ -33,7 +33,7 @@ public class PlayerControllerMP {
 	private static Object getPlayerController(){
 		try{
 			Class cls = Minecraft.class;
-			Field f=cls.getField("c");
+			Field f=cls.getField("c");// 1.9.2 ~ 1.9.4
 			Object pc=f.get(Minecraft.getMinecraft());
 			return pc;
 		}catch(Exception e){
@@ -49,7 +49,8 @@ public class PlayerControllerMP {
 	private PlayerControllerMP(Object pmObj){
 		try{
 			this.pmObj=pmObj;
-			cls = Class.forName("bkq");
+			// 1.9.4 is bkr , 1.9.2 is bkq
+			cls = Class.forName("bkr");
 			
 			rightClickBlock = cls.getMethod("a",
 					EntityPlayerSP.class,WorldClient.class,ItemStack.class,
@@ -92,7 +93,7 @@ public class PlayerControllerMP {
 			return result.floatValue();
 		}catch(Exception e){
 			APILog.error("Invoke getBlockReachDistance fail");
-			return 4.0F;
+			return 4.5F;
 		}
 	}
 }
