@@ -1,0 +1,16 @@
+# CL: bcc net/minecraft/client/Minecraft
+# MD: e net/minecraft/client/Minecraft getPlayer ()Lnet/minecraft/entity/EntityPlayer;
+# FD: wQ net/minecraft/client/Minecraft thePlayer Lnet/minecraft/entity/EntityPlayer;
+
+# srgName name
+CL: bcd net/minecraft/client/Minecraft
+CL: byg net/minecraft/client/audio/ISound
+CL: byt net/minecraft/client/audio/SoundManager
+CL: bkr net/minecraft/client/multiplayer/PlayerControllerMP
+CL: bcf net/minecraft/client/settings/GameSettings
+
+# srgName owner name descriptor
+MD: a net/minecraft/client/audio/ISound getSoundLocation ()Lnet/minecraft/util/ResourceLocation;
+MD: i net/minecraft/client/audio/ISound getXPosF ()F
+MD: j net/minecraft/client/audio/ISound getYPosF ()F
+MD: k net/minecraft/client/audio/ISound getZPosF ()F

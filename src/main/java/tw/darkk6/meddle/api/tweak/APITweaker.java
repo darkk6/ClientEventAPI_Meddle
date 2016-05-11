@@ -16,6 +16,8 @@ import tw.darkk6.meddle.api.listener.IRenderOverlayListener;
 import tw.darkk6.meddle.api.listener.IRenderTickListener;
 import tw.darkk6.meddle.api.listener.ISoundListener;
 import tw.darkk6.meddle.api.listener.ITickListener;
+import tw.darkk6.meddle.api.srg.SrgMap;
+import tw.darkk6.meddle.api.srg.SrgMap.MethodKey;
 import tw.darkk6.meddle.api.transformer.TransformHandler;
 import tw.darkk6.meddle.api.util.Reference;
 
@@ -32,6 +34,10 @@ public class APITweaker implements ITweaker {
 		EventRegister.EVENT_BUS.put(EventType.SOUNDPLAY,new ArrayList<ISoundListener>());
 		EventRegister.EVENT_BUS.put(EventType.RENDERTICK,new ArrayList<IRenderTickListener>());
 		EventRegister.EVENT_BUS.put(EventType.RENDEROVERLAY,new ArrayList<IRenderOverlayListener>());
+		
+		SrgMap.initSrgMap();
+		//==== DEBUG ===
+		SrgMap.printDebug();
 	}
 
 	@Override
