@@ -4,10 +4,21 @@ this.o.a(float,long); [ bcc.av() ]
 	=> EntityRender => this.o => class "bnd" #1125 , Forge 呼叫的是自己的 Class
 	但實際上應該要呼叫的是 mc 自己的 GuiIngame
 
-
+	
 .event.SoundEvent
 	<init>
 		sound.getSoundLocation().a() => getResourcePath() [ in class ResourceLocation ]
+	
+.util.APILog
+	logChat
+		txt.a() => txt.append()
+		
+	infoChat
+		txt.a() => txt.append()
+		
+============== 底下部分已移到 srg 檔案中 ===============
+
+.event.SoundEvent
 		
 	innerClass ISound
 		<init>
@@ -56,13 +67,6 @@ this.o.a(float,long); [ bcc.av() ]
 		getMethod("d"); => d : getBlockReachDistance()
 		getMethod(""); =>  : 
 		getMethod(""); =>  : 
-		
-.util.APILog
-	logChat
-		txt.a() => txt.append()
-		
-	infoChat
-		txt.a() => txt.append()
 		
 .util.APIUtil
 	getLanguage

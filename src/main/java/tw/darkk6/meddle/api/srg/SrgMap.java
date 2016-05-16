@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import net.fybertech.meddle.Meddle;
 import net.fybertech.meddle.MeddleUtil;
@@ -37,6 +39,13 @@ public class SrgMap {
 				break;
 			}
 		}
+		
+		//檢查每個 jar 檔案中是否有 srgmap/ver.srg
+		for(File f : Meddle.getMeddleDir().listFiles()){
+			if((!f.isFile()) || (!f.getName().endsWith(".jar"))) continue;
+			findAndLoadSrgMapInJar(f);
+		}
+		
 		return true;
 	}
 	
@@ -83,24 +92,15 @@ public class SrgMap {
 	}
 	
 	
-	public static void printDebug(){
+	public static void listSrgMappings(){
 		for(String str:clzMap.keySet())
-			System.out.println("CL: "+str+" => "+clzMap.get(str));
+			APILog.info("CL: "+str+" => "+clzMap.get(str));
 		for(MethodKey key:methodMap.keySet())
-			System.out.println(key.toString());
+			APILog.info(key.toString());
 		for(FieldKey key:fieldMap.keySet())
-			System.out.println(key.toString());
+			APILog.info(key.toString());
 	}
 /***************************************************************************/
-	private static boolean loadFromExtFile(File f){
-		try{
-			return loadMapFromFile(new FileInputStream(f));
-		}catch(Exception e){
-			APILog.error(e.getMessage());
-			return false;
-		}
-	}
-	
 	private static boolean loadMapFromFile(InputStream srgStream){
 		Scanner ipt=new Scanner(srgStream);
 		while(ipt.hasNextLine()){
@@ -111,18 +111,18 @@ public class SrgMap {
 			try{
 				//正式開始讀取分析
 				if("CL:".equals(data[0])){
-					if(clzMap.containsKey(data[2]))
-						APILog.info(data[2]+"已存在，將取代為 "+data[1]+" [原"+clzMap.get(data[2])+"]");
+					if(clzMap.containsKey(data[2]) && !clzMap.get(data[2]).equals(data[1]))
+						APILog.debug(data[2]+"已存在，將取代為 "+data[1]+" [原"+clzMap.get(data[2])+"]");
 					clzMap.put(data[2], data[1]);
 				}else if("MD:".equals(data[0])){
 					MethodKey key=MethodKey.get(data[3],data[4],data[2],data[1]);
-					if(methodMap.containsKey(key))
-						APILog.info(data[2]+"->"+data[3]+data[4]+"已存在，將取代為 "+data[1]+" [原"+methodMap.get(key)+"]");
+					if(methodMap.containsKey(key) && !data[1].equals(methodMap.get(key)))
+						APILog.debug(data[2]+"->"+data[3]+data[4]+"已存在，將取代為 "+data[1]+" [原"+methodMap.get(key)+"]");
 					methodMap.put(key, key.getSrgName());
 				}else if("FD:".equals(data[0])){
 					FieldKey key=FieldKey.get(data[3],data[4],data[2],data[1]);
-					if(fieldMap.containsKey(key))
-						APILog.info(data[2]+"->"+data[3]+"已存在，將取代為 "+data[1]+" [原"+fieldMap.get(key)+"]");
+					if(fieldMap.containsKey(key) && !data[1].equals(fieldMap.get(key)))
+						APILog.debug(data[2]+"->"+data[3]+"已存在，將取代為 "+data[1]+" [原"+fieldMap.get(key)+"]");
 					fieldMap.put(key, key.getSrgName());
 				}
 			}catch(Exception e){
@@ -136,6 +136,33 @@ public class SrgMap {
 		InputStream srgStream=SrgMap.class.getResourceAsStream("/srgmapping/"+MC_VER+".srg");
 		if(srgStream==null) return false;
 		return loadMapFromFile(srgStream);
+	}
+	private static boolean loadFromExtFile(File f){
+		try{
+			return loadMapFromFile(new FileInputStream(f));
+		}catch(Exception e){
+			APILog.error(e.getMessage());
+			return false;
+		}
+	}
+	private static void findAndLoadSrgMapInJar(File file){
+		String jarFileName=file.getName().replaceAll("(.*)\\.jar$","$1");
+		try{
+			JarFile jar=new JarFile(file);
+			// NOTE 這邊前面不能有 / , 否則會找不到
+			ZipEntry entry=jar.getEntry("srgmap/"+MC_VER+".srg");
+			if(entry==null){
+				jar.close();
+				return;
+			}
+			APILog.info("=== 開始讀取 "+jarFileName+" 的 SrgMap ===");
+			boolean res=loadMapFromFile(jar.getInputStream(entry));
+			if(res) APILog.info("=== 讀取完畢 === ");
+			else APILog.error("=== 讀取失敗 === ");
+			jar.close();
+		}catch(Exception e){
+			APILog.error("無法載入 "+jarFileName+" 的 SrgMap，已跳過");
+		}
 	}
 /***************************************************************************/
 	

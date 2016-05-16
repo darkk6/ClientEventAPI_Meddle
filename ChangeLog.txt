@@ -1,5 +1,6 @@
 - 1.3
 	Update to Minecraft 1.9.4
+	add Srg Mapping API
 
 - 1.2
 	add RenderOverlay event

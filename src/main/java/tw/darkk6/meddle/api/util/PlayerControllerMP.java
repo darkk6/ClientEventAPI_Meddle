@@ -14,6 +14,9 @@ import net.minecraft.util.ItemUseResult;
 import net.minecraft.util.MainOrOffHand;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import tw.darkk6.meddle.api.mapping.APIMap;
+import tw.darkk6.meddle.api.mapping.APINameMap;
+import tw.darkk6.meddle.api.srg.SrgMap;
 
 public class PlayerControllerMP {
 	
@@ -33,7 +36,7 @@ public class PlayerControllerMP {
 	private static Object getPlayerController(){
 		try{
 			Class cls = Minecraft.class;
-			Field f=cls.getField("c");// 1.9.2 ~ 1.9.4
+			Field f=cls.getField(SrgMap.getFieldName(APINameMap.fPlayerController));
 			Object pc=f.get(Minecraft.getMinecraft());
 			return pc;
 		}catch(Exception e){
@@ -49,19 +52,18 @@ public class PlayerControllerMP {
 	private PlayerControllerMP(Object pmObj){
 		try{
 			this.pmObj=pmObj;
-			// 1.9.4 is bkr , 1.9.2 is bkq
-			cls = Class.forName("bkr");
+			cls = APIMap.get().PlayerControllerMPClz;
 			
-			rightClickBlock = cls.getMethod("a",
+			rightClickBlock = cls.getMethod(APIMap.get().processRightClick,
 					EntityPlayerSP.class,WorldClient.class,ItemStack.class,
 					BlockPos.class,EnumFacing.class,Vec3.class,MainOrOffHand.class
 				);
 			
-			rightClick = cls.getMethod("a",
+			rightClick = cls.getMethod(APIMap.get().processRightClickBlock,
 					EntityPlayer.class,World.class,ItemStack.class,MainOrOffHand.class
 				);
 			
-			getBlockReachDistance = cls.getMethod("d");
+			getBlockReachDistance = cls.getMethod(APIMap.get().getBlockReachDistance);
 		}catch(Exception e){
 			throw new RuntimeException("Can not create PlayerControllerMP object");
 		}

@@ -16,35 +16,17 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import tw.darkk6.meddle.api.Config;
+import tw.darkk6.meddle.api.mapping.APINameMap;
+import tw.darkk6.meddle.api.srg.SrgMap;
 import tw.darkk6.meddle.api.util.APILog;
 
 public class TransformHandler implements IClassTransformer {
-	/*
-	 *	Minecraft
-	 *		bcd : 1.9.4
-	 *		bcc : 1.9.2 
-	 * 
-	 * GuiIngame
-	 * 		bcs : 1.9.4
-	 * 		bcr : 1.9.2
-	 * 
-	 * GuiScreen
-	 * 		bez : 1.9.4
-	 * 		bey : 1.9.2
-	 * 
-	 * SoundManager
-	 * 		byt : 1.9.2 ~ 1.9.4
-	 * 
-	 * ISound
-	 * 		byg : 1.9.2 ~ 1.9.4
-	 * 
-	 */
+
 	private static String MINECRAFT = DynamicMappings.getClassMapping("net/minecraft/client/Minecraft");
 	
 	private static String GUIINGAME = DynamicMappings.getClassMapping("net/minecraft/client/gui/GuiIngame");
 	
-	//net.minecraft.client.audio.SoundManager
-	private static String SOUNDMGR = "byt";
+	private static String SOUNDMGR = SrgMap.getClassName(APINameMap.clzSoundManager);
 	
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
@@ -65,8 +47,8 @@ public class TransformHandler implements IClassTransformer {
 	}
 /************************* Inject onRenderTick Event in Minecraft.class ******************************/
 	private byte[] injectOnRenderTickEvent(byte[] bytes){
-		String runGameLoopName = "av";	// 1.9.2~1.9.4
-		String methodDecs = "()V";
+		String runGameLoopName = SrgMap.getMethodName(APINameMap.mRunGameLoop);
+		String methodDecs = APINameMap.runGameLoopDesc;
 		
 		ClassNode classNode = new ClassNode();
 		ClassReader classReader = new ClassReader(bytes);
@@ -148,7 +130,7 @@ public class TransformHandler implements IClassTransformer {
 		byte[] result = writer.toByteArray();
 		if (result == null) return bytes;
 		
-		if(Config.debug) APILog.info("onRenderTick Event hooked.");
+		APILog.debug("onRenderTick Event hooked.");
 		return result;
 	}
 	
@@ -209,15 +191,14 @@ public class TransformHandler implements IClassTransformer {
 		byte[] result = writer.toByteArray();
 		if (result == null) return bytes;
 		
-		if(Config.debug) APILog.info("onGuiOpen Event hooked.");
+		APILog.debug("onGuiOpen Event hooked.");
 		return result;
 	}
 	
 /************************* Inject onTick Event in Minecraft.class ******************************/
 	private byte[] injectOnTickEvent(byte[] bytes){
-		// runTick() 在 1.9.2 ~ 1.9.4 => t ()V
-		String runTickName = "t";	//method name
-		String runTickDesc = "()V";	//method descriptor
+		String runTickName = SrgMap.getMethodName(APINameMap.mRunTick);
+		String runTickDesc = APINameMap.runTickDesc;
 		
 		ClassNode classNode = new ClassNode();
 		ClassReader classReader = new ClassReader(bytes);
@@ -277,17 +258,17 @@ public class TransformHandler implements IClassTransformer {
 		byte[] result = writer.toByteArray();
 		if (result == null) return bytes;
 		
-		if(Config.debug) APILog.info("onTick Event hooked.");
+		APILog.debug("onTick Event hooked.");
 		return result;
 	}
 	
 /************************* Inject onSoundPlay Event in SoundManager.class ******************************/
-	//當 Client 播放聲音時 playSound(ISound p_sound)V  => c(byg isound)V
-	//byg net/minecraft/client/audio/ISound , 1.9.2~1.9.4
+	//當 Client 播放聲音時 playSound(ISound p_sound)V
 	private byte[] injectOnSoundPlayEvent(byte[] bytes){
-		String iSoundName = "byg";	//1.9.2~1.9.4
-		String playMethod = "c";	//1.9.2~1.9.4
-		String playMethodDecs = "(L"+iSoundName+";)V";
+		String playMethod = SrgMap.getMethodName(APINameMap.mPlaySound);
+		String playMethodDecs = APINameMap.playSoundDesc;
+		
+		APILog.debug("try to find soundPlay : "+playMethod+playMethodDecs);
 		
 		ClassNode classNode = new ClassNode();
 		ClassReader classReader = new ClassReader(bytes);
@@ -346,14 +327,13 @@ public class TransformHandler implements IClassTransformer {
 		byte[] result = writer.toByteArray();
 		if (result == null) return bytes;
 		
-		if(Config.debug) APILog.info("onSoundPlay Event hooked.");
+		APILog.debug("onSoundPlay Event hooked.");
 		return result;
 	}
 /************************* Inject onRenderOverlay Event in GuiIngame.class ******************************/
 	private byte[] injectOnRenderOverlayEvent(byte[] bytes){
-		// in Minecraft 1.9.2 ~ 1.9.4 => renderGameOverlay=> a(F)V
-		String renderGOMethod = "a";
-		String renderGOMethodDecs = "(F)V";
+		String renderGOMethod = SrgMap.getMethodName(APINameMap.mRenderGameOverlay);
+		String renderGOMethodDecs = APINameMap.renderGameOverlayDesc;
 		
 		ClassNode classNode = new ClassNode();
 		ClassReader classReader = new ClassReader(bytes);
@@ -425,7 +405,7 @@ public class TransformHandler implements IClassTransformer {
 		byte[] result = writer.toByteArray();
 		if (result == null) return bytes;
 		
-		if(Config.debug) APILog.info("onRenderOverlay Event hooked.");
+		APILog.debug("onRenderOverlay Event hooked.");
 		return result;
 	}
 }

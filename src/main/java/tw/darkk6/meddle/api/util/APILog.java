@@ -6,7 +6,7 @@ import net.minecraft.util.ChatComponentText;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import tw.darkk6.meddle.api.util.APILog.TextFormatting;
+import tw.darkk6.meddle.api.Config;
 
 public class APILog {
 	public static Logger log=LogManager.getLogger(Reference.AUTHOR);
@@ -14,6 +14,13 @@ public class APILog {
 	public static Logger info(String msg){ APILog.info(msg,Reference.LOG_TAG);return log;}
 	public static Logger info(String msg,String tag){
 		log.info("["+tag+"] "+msg);
+		return log;
+	}
+	
+	public static Logger debug(String msg){ APILog.debug(msg,Reference.LOG_TAG);return log;}
+	public static Logger debug(String msg,String tag){
+		if(!Config.debug) return log;
+		log.info("["+tag+"] D:"+msg);
 		return log;
 	}
 	

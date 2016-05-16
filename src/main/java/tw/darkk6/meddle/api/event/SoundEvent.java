@@ -3,6 +3,9 @@ package tw.darkk6.meddle.api.event;
 import java.lang.reflect.Method;
 
 import net.minecraft.util.ResourceLocation;
+import tw.darkk6.meddle.api.mapping.APIMap;
+import tw.darkk6.meddle.api.mapping.APINameMap;
+import tw.darkk6.meddle.api.srg.SrgMap;
 
 public class SoundEvent {
 	public String name;
@@ -23,20 +26,19 @@ public class SoundEvent {
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public ISound(Object iSoundObj){
 			try{
-				// byg => ISound
-				Class clz=Class.forName("byg");
-				//=== a => getSoundLocation() ===
-				Method m=clz.getMethod("a");
+				Class clz=APIMap.get().ISoundClz;
+				
+				Method m=clz.getMethod(SrgMap.getMethodName(APINameMap.mGetSoundLocation));
 				ResourceLocation r=(ResourceLocation)m.invoke(iSoundObj);
 				this.resLocation=r;
-				//=== i => getXPosF() ===
-				m=clz.getMethod("i");
+				
+				m=clz.getMethod(SrgMap.getMethodName(APINameMap.mGetXPosF));
 				this.x=(Float)m.invoke(iSoundObj);
-				//=== j => getYPosF() ===
-				m=clz.getMethod("j");
+				
+				m=clz.getMethod(SrgMap.getMethodName(APINameMap.mGetYPosF));
 				this.y=(Float)m.invoke(iSoundObj);
-				//=== k=> getZPosF() ===
-				m=clz.getMethod("k");
+				
+				m=clz.getMethod(SrgMap.getMethodName(APINameMap.mGetZPosF));
 				this.z=(Float)m.invoke(iSoundObj);
 				
 			}catch(Exception e){

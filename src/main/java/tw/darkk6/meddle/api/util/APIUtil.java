@@ -7,6 +7,9 @@ import net.minecraft.client.Minecraft;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import tw.darkk6.meddle.api.mapping.APINameMap;
+import tw.darkk6.meddle.api.srg.SrgMap;
+
 public class APIUtil {
 
 	public static PlayerControllerMP getPlayerController(){
@@ -21,11 +24,11 @@ public class APIUtil {
 		try{
 			if(gameSettings==null){
 				Class cls=Minecraft.class;
-				Field f=cls.getField("u");//Minecraft.gameSettings
+				Field f=cls.getField(SrgMap.getFieldName(APINameMap.fGameSettings));
 				gameSettings=f.get(Minecraft.getMinecraft());
 			}
 			if(language_field==null){
-				language_field=gameSettings.getClass().getField("aC");//gameSettings.languge
+				language_field=gameSettings.getClass().getField(SrgMap.getFieldName(APINameMap.fLanguage));
 			}
 			String lang=language_field.get(gameSettings).toString();
 			return lang;
